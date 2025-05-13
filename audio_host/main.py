@@ -5,14 +5,16 @@ import openai
 
 app = FastAPI()
 
-# ✅ Twilio Credentials (Final, no edits)
-account_sid = "ACfe9f45e6152aa5a6e6325613a2f6ae66"
-auth_token = "eafc38a7a29748c8ea61f34246c6a866"
-twilio_number = "+16813346078"
-client = Client(account_sid, auth_token)
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-# ✅ OpenAI API Key (Final, no edits)
-openai.api_key = "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"
+account_sid = os.getenv("TWILIO_ACCOUNT_SID")
+auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+twilio_number = os.getenv("TWILIO_PHONE")
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 # ✅ 1st question for the call
 gpt_conversation = [
