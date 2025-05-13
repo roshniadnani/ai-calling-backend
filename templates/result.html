@@ -1,57 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survey Result</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 60%;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        .result {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .result label {
-            font-weight: bold;
-        }
-
-        .result p {
-            margin: 5px 0;
-        }
-    </style>
-</head>
+<html>
+<head><title>Thank You</title></head>
 <body>
-
-<div class="container">
-    <h2>Survey Result</h2>
-    <div class="result">
-        <label for="name">Your Name:</label>
-        <p>{{ name }}</p>
-    </div>
-    <div class="result">
-        <label for="email">Your Email:</label>
-        <p>{{ email }}</p>
-    </div>
-</div>
-
+  <h1>Thank you, {{ name }}!</h1>
+  <p>We’ve received your survey submission.</p>
 </body>
 </html>

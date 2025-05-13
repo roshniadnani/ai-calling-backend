@@ -1,6 +1,10 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+# ✅ Optional: Setup for GPT use if needed in future
+import openai
+openai.api_key = "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"
+
 # STEP 1: SETUP GOOGLE SHEET ACCESS
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)

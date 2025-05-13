@@ -1,19 +1,19 @@
 import requests
 
-# Replace with your correct ElevenLabs API key and voice ID
-api_key = "sk_eb35891891b639b2337526f9dae63157abdf3257be9118b0"  # Your ElevenLabs API Key
+# New ElevenLabs API key and voice ID
+api_key = "sk_edd3176f7b6dd2ec4902a2001883c9bf24d5ff4b8022db1a"  # Your new API Key
 voice_id = "zWRDoH56JB9twPHdkksW"  # Desiree's Voice ID (replace with your actual voice ID)
 
 # Function to generate speech using ElevenLabs API
 def generate_speech(text, voice_id=voice_id, api_key=api_key):
     url = "https://api.elevenlabs.io/v1/text-to-speech/generate"
     headers = {
-        "Authorization": f"Bearer {api_key}",
+        "Authorization": f"Bearer {api_key}",  # Make sure this API key is correct
         "Content-Type": "application/json"
     }
     data = {
-        "text": text,
-        "voice": voice_id  # Use Desiree's voice ID
+        "text": text,       # The text to be converted to speech
+        "voice": voice_id   # Desiree's voice ID
     }
 
     # Make the API request to generate speech
@@ -30,7 +30,7 @@ def generate_speech(text, voice_id=voice_id, api_key=api_key):
         print("Error generating speech:", response.json())
         return None
 
-# Example usage to generate speech (you can replace this text with anything you need for your call)
+# Example usage to generate speech (you can replace this text with your dynamic script)
 script = """
 Hello, this is Desiree calling from Millennium by Exceedance. We are performing home inspections for your insurance company. I need just a few minutes of your time.
 
