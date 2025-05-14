@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, Response, HTTPException
 import os
 from twilio.rest import Client
 import openai
@@ -36,11 +36,6 @@ gpt_conversation = [
 # FastAPI application setup
 app = FastAPI()
 
-# Debugging: Print the Twilio credentials to check if they are loaded correctly
-print(f"Twilio Account SID: {account_sid}")
-print(f"Twilio Auth Token: {auth_token}")
-print(f"Twilio Phone: {twilio_number}")
-
 @app.get("/")
 async def root():
     return {"message": "FastAPI is running!"}
@@ -48,21 +43,22 @@ async def root():
 @app.get("/twiml")
 async def twiml():
     try:
-        # Ask GPT for the next line of the conversation
-        response = openai.ChatCompletion.create(
+        # Ask GPT for the next line of the conversation using openai.Completion.create() method
+        response = openai.Completion.create(
             model="gpt-4",
-            messages=gpt_conversation
+            prompt="You are Desiree, a friendly insurance agent doing a home survey. Ask short and specific questions and do not chit-chat.",
+            max_tokens=100  # Limit the response length to 100 tokens
         )
-        reply = response['choices'][0]['message']['content']
-        gpt_conversation.append({"role": "assistant", "content": reply})
+        reply = response.choices[0].text.strip()  # Extract the text of the response
 
-        # Use the S3 URL of Desiree's intro audio
+        # Use the S3 URL of Desiree's intro audio (stored on AWS S3)
         speech_url = "https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3"
         
         # Build TwiML with <Play> to play the audio from S3
         twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
         <Response>
-            <Play>{https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3}</Play>
+            <Play>{speech_url}</Play>  <!-- Play Desiree's intro audio -->
+            <Say voice="alice">{reply}</Say>  <!-- GPT-generated response -->
         </Response>"""
         
         return Response(content=twiml, media_type="application/xml")
@@ -80,7 +76,7 @@ def make_call(to_number: str):
         call = client.calls.create(
             to=to_number,
             from_=twilio_number,
-            url="https://ai-calling-backend.onrender.com/twiml"  # Updated Render URL for production
+            url="https://ai-calling-backend.onrender.com/twiml"  # This URL should point to the /twiml route
         )
         
         print(f"Call SID: {call.sid}")  # Log the Call SID for confirmation
