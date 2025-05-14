@@ -1,6 +1,9 @@
+openai
+twilio
 fastapi
 uvicorn
-twilio
-jinja2
+requests
+gspread
+oauth2client
 python-dotenv
 python-multipart
