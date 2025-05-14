@@ -69,6 +69,6 @@ def make_call(to_number: str):
     call = client.calls.create(
         to=to_number,
         from_=twilio_number,
-        url="https://your-app-url/twiml"  # Replace with your actual deployed URL
+        url="https://ai-calling-backend.onrender.com/twiml"  # Replace with your actual deployed URL
     )
     return {"message": "Call initiated", "call_sid": call.sid}
