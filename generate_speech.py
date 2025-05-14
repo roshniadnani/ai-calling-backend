@@ -29,28 +29,3 @@ def generate_speech(text, voice_id=voice_id, api_key=api_key):
     else:
         print("Error generating speech:", response.json())
         return None
-
-# Example usage to generate speech (you can replace this text with your dynamic script)
-script = """
-Hello, this is Desiree calling from Millennium by Exceedance. We are performing home inspections for your insurance company. I need just a few minutes of your time.
-
-First, can you confirm if the smoke detectors in your home are working? (Yes / No / Unknown)
-
-What year was your home built?
-
-Do you have stairs in your home? (Yes / No)
-
-Is there a pool on your property? (Yes / No)
-
-Can you tell me about the flooring type in your house?
-
-Do you have any pets in your home? (Yes / No)
-
-We also need to know the type of heating system in your home. Is it gas, electric, or something else?
-
-Lastly, could you confirm if your home has a basement? (Yes / No)
-"""
-
-# Generate speech using ElevenLabs
-audio_path = generate_speech(script)
-print(f"Audio generated and saved at: {audio_path}")
