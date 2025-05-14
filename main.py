@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, HTTPException, Response
 import os
 from twilio.rest import Client
 import openai
-import boto3
 from dotenv import load_dotenv
+import boto3
 
 # Load environment variables from .env file
 load_dotenv()
@@ -36,39 +36,57 @@ gpt_conversation = [
 # FastAPI application setup
 app = FastAPI()
 
-# Root route to confirm the server is up
+# Debugging: Print the Twilio credentials to check if they are loaded correctly
+print(f"Twilio Account SID: {account_sid}")
+print(f"Twilio Auth Token: {auth_token}")
+print(f"Twilio Phone: {twilio_number}")
+
 @app.get("/")
 async def root():
     return {"message": "FastAPI is running!"}
 
-# TwiML route for generating audio response (from S3)
 @app.get("/twiml")
 async def twiml():
-    # Ask GPT for the next line of the conversation
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=gpt_conversation
-    )
-    reply = response['choices'][0]['message']['content']
-    gpt_conversation.append({"role": "assistant", "content": reply})
+    try:
+        # Ask GPT for the next line of the conversation
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=gpt_conversation
+        )
+        reply = response['choices'][0]['message']['content']
+        gpt_conversation.append({"role": "assistant", "content": reply})
 
-    # Use the S3 URL of Desiree's intro audio
-    speech_url = "https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3"
+        # Use the S3 URL of Desiree's intro audio
+        speech_url = "https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3"
+        
+        # Build TwiML with <Play> to play the audio from S3
+        twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
+        <Response>
+            <Play>{https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3}</Play>
+        </Response>"""
+        
+        return Response(content=twiml, media_type="application/xml")
     
-    # Build TwiML with <Play> to play the audio from S3
-    twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
-    <Response>
-        <Play>{speech_url}</Play>
-    </Response>"""
-    
-    return Response(content=twiml, media_type="application/xml")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing TwiML: {str(e)}")
 
-# Make call route to initiate a call
 @app.get("/make-call/{to_number}")
 def make_call(to_number: str):
-    call = client.calls.create(
-        to=to_number,
-        from_=twilio_number,
-        url="https://ai-calling-backend.onrender.com/twiml"  # Replace with your actual deployed URL
-    )
-    return {"message": "Call initiated", "call_sid": call.sid}
+    try:
+        # Log the received phone number
+        print(f"Making call to: {to_number}")
+        
+        # Attempt to initiate the call
+        call = client.calls.create(
+            to=to_number,
+            from_=twilio_number,
+            url="https://ai-calling-backend.onrender.com/twiml"  # Updated Render URL for production
+        )
+        
+        print(f"Call SID: {call.sid}")  # Log the Call SID for confirmation
+        
+        return {"message": "Call initiated", "call_sid": call.sid}
+    
+    except Exception as e:
+        print(f"Error initiating call: {str(e)}")  # Log the error details
+        raise HTTPException(status_code=500, detail=f"Error initiating call: {str(e)}")
