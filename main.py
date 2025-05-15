@@ -31,7 +31,7 @@ app = FastAPI()
 async def twiml():
     try:
         # Generate the next line using OpenAI API
-        response = openai.ChatCompletion.create(  # Corrected method name
+        response = openai.ChatCompletion.create(  # Correct method name
             model="gpt-4",  # Use the model you prefer
             messages=gpt_conversation
         )
@@ -41,7 +41,7 @@ async def twiml():
         gpt_conversation.append({"role": "assistant", "content": reply})
 
         # Build the TwiML response with the generated reply
-        speech_url = "https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3"  # Replace with actual Desiree's voice audio URL
+        speech_url = "https://desiree-voice-files.s3.eu-north-1.amazonaws.com/desiree_intro.mp3"  # AWS S3 URL (or your new URL)
         
         # Create the TwiML XML response to be sent back to Twilio
         twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
