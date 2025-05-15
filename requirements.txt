@@ -8,3 +8,4 @@ oauth2client
 python-dotenv
 python-multipart
 boto3
+openai==0.28
